@@ -161,6 +161,7 @@ Then:
 ```bash
 python -m camp_forms plan              # score camps and build a summer schedule
 python -m camp_forms plan --discover   # also web-search for more local camps first
+python -m camp_forms plan-review       # adjust the schedule week by week, then approve
 ```
 
 Three focused Claude agents do the work:
@@ -175,6 +176,12 @@ The output is a **proposed schedule** — a week × child grid with fit scores, 
 trade-offs it made (where it chose farther/pricier for a clearly better camp), and
 the open questions only you can answer (is Ava *actually* enrolled that week?).
 Nothing is registered. Once you pick, the form pipeline handles each signup.
+
+`plan-review` then walks that schedule with you, the way `review` walks the form
+drafts. For any week you can **swap** a child's camp for another — and you're only
+offered camps that actually run that week and that the Matcher judged the child
+eligible for, ranked by fit — or **clear** a week to a gap. The running total
+re-costs as you go, and `approve` saves your edits (still registering nothing).
 
 Two deliberate guardrails:
 
@@ -197,7 +204,6 @@ Two deliberate guardrails:
 - **Plan → forms handoff**: turn an approved summer plan straight into the
   registration drafts for each chosen camp.
 - **Waitlist / fill-rate awareness** in the scheduler (register-early signals).
-- **Interactive plan review**: approve/swap individual weeks like the form review CLI.
 
 ---
 
@@ -215,7 +221,8 @@ camp_forms/
   llm.py            # Anthropic client, structured-output + tool-use helpers
   models.py         # typed schemas shared across agents
   review.py         # human-in-the-loop approval CLI (forms)
-  plan_view.py      # human-in-the-loop summer-schedule view
+  plan_view.py      # renders the proposed summer schedule
+  plan_review.py    # human-in-the-loop summer-schedule review (swap/clear/approve)
   agents/
     triage.py  extractor.py  filler.py     # form pipeline
     discovery.py  matcher.py  scheduler.py  # camp-matching pipeline

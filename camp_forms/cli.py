@@ -6,7 +6,8 @@ Commands:
   demo     Run the whole pipeline on bundled sample emails (no Gmail needed).
   review   Walk through drafts and approve/edit them.
   status   Show a one-line summary of every draft.
-  plan     Match camps to your kids and assemble a full-summer schedule.
+  plan          Match camps to your kids and assemble a full-summer schedule.
+  plan-review   Walk the schedule and swap/clear weeks, then approve it.
 """
 
 from __future__ import annotations
@@ -79,6 +80,13 @@ def _cmd_plan(args) -> None:
     )
     print()
     print_plan(result.plan, result.scores, child_names(result.preferences))
+    print("\nRun `python -m camp_forms plan-review` to adjust and approve it.")
+
+
+def _cmd_plan_review(args) -> None:
+    from .plan_review import review_plan
+
+    review_plan(path=args.plan)
 
 
 def _print_scan_summary(items) -> None:
@@ -112,6 +120,10 @@ def main(argv=None) -> int:
         help="Append discovered camps to your catalog file",
     )
     p_plan.set_defaults(func=_cmd_plan)
+
+    p_plan_review = sub.add_parser("plan-review", help="Adjust and approve a saved summer plan")
+    p_plan_review.add_argument("--plan", default=None, help="Path to a plan JSON (default: most recent)")
+    p_plan_review.set_defaults(func=_cmd_plan_review)
 
     args = parser.parse_args(argv)
     args.func(args)
