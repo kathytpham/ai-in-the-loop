@@ -1,0 +1,16 @@
+# Secrets & credentials — never commit these
+.env
+credentials.json
+token.json
+config/family_profile.yaml
+
+# Generated drafts (may contain personal data)
+data/drafts/*.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/

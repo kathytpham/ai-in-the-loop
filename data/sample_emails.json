@@ -1,0 +1,34 @@
+[
+  {
+    "message_id": "sample-inline-001",
+    "sender": "Camp Wildwood <register@campwildwood.example>",
+    "subject": "Action needed: Mia's camper info form (due May 15)",
+    "received": "Mon, 21 Apr 2026 09:02:00 -0700",
+    "body_text": "Hi families!\n\nWe're so excited for summer! To finish Mia's registration for Session 2, please reply to this email with the following information by May 15:\n\n- Camper full name\n- Date of birth\n- Grade entering in the fall\n- T-shirt size (youth S/M/L)\n- Swimming ability (non-swimmer / beginner / intermediate / advanced)\n- Any allergies or medical conditions we should know about\n- Emergency contact name and phone number\n- Parent/guardian signature confirming you've read the camp policies\n\nThanks!\nThe Camp Wildwood Team",
+    "body_html": ""
+  },
+  {
+    "message_id": "sample-website-002",
+    "sender": "Sunrise Soccer Academy <info@sunrisesoccer.example>",
+    "subject": "Complete Leo's online registration form",
+    "received": "Tue, 22 Apr 2026 14:30:00 -0700",
+    "body_text": "Hello,\n\nThank you for your interest in our Summer Soccer Camp! Please complete Leo's registration at the link below before spots fill up:\n\nhttps://sunrisesoccer.example/register/summer-2026\n\nThe form takes about 5 minutes. Payment is collected separately after registration.\n\nSee you on the field!\nSunrise Soccer Academy",
+    "body_html": ""
+  },
+  {
+    "message_id": "sample-portal-003",
+    "sender": "CampMinder <noreply@campminder.example>",
+    "subject": "Your CampDoc health forms are now open",
+    "received": "Wed, 23 Apr 2026 08:15:00 -0700",
+    "body_text": "Dear Parent,\n\nThe health history and medication forms for Pine Lake Camp are now available in your CampDoc account. Please log in to complete them by June 1:\n\nhttps://app.campdoc.example/login\n\nForms include the annual health history, immunization records, and a physician-signed physical exam. You will need your account password to access them.\n\nThank you,\nPine Lake Camp Health Team",
+    "body_html": ""
+  },
+  {
+    "message_id": "sample-newsletter-004",
+    "sender": "Camp Wildwood <news@campwildwood.example>",
+    "subject": "5 things to pack for a great summer ☀️",
+    "received": "Thu, 24 Apr 2026 11:00:00 -0700",
+    "body_text": "Summer is almost here! Here are our top packing tips: sunscreen, a reusable water bottle, sturdy shoes, a hat, and a positive attitude. No action needed — just getting you excited! See you soon.",
+    "body_html": ""
+  }
+]

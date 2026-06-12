@@ -1,0 +1,65 @@
+# Copy this to config/family_profile.yaml and fill in your real details.
+# config/family_profile.yaml is gitignored so your data stays local.
+#
+# The Filler agent matches these keys onto whatever a form asks for. You don't
+# need to anticipate every form field — just keep this accurate and complete.
+
+parents:
+  - name: Jane Pham
+    relationship: mother
+    email: parent@example.com
+    phone: "555-201-3344"
+    work_phone: "555-900-1122"
+  - name: Alex Pham
+    relationship: father
+    email: alex@example.com
+    phone: "555-201-7788"
+
+address:
+  street: 123 Maple Street
+  city: Springfield
+  state: CA
+  zip: "94000"
+
+emergency_contacts:
+  - name: Maria Lopez
+    relationship: aunt
+    phone: "555-444-2211"
+  - name: David Pham
+    relationship: grandfather
+    phone: "555-333-9090"
+
+children:
+  - name: Mia Pham
+    date_of_birth: "2015-04-12"
+    grade_in_fall: "4th"
+    tshirt_size: youth M
+    swimming_ability: intermediate
+    allergies: peanuts (carries an EpiPen)
+    medications: none
+    dietary_restrictions: vegetarian
+    physician:
+      name: Dr. Susan Reed
+      phone: "555-700-1234"
+    insurance:
+      provider: BlueShield
+      member_id: "XJ45567788"
+    notes: comfortable with day camps; first time at overnight camp this year
+
+  - name: Leo Pham
+    date_of_birth: "2017-09-30"
+    grade_in_fall: "2nd"
+    tshirt_size: youth S
+    swimming_ability: beginner
+    allergies: none
+    medications: inhaler as needed (mild asthma)
+    dietary_restrictions: none
+    physician:
+      name: Dr. Susan Reed
+      phone: "555-700-1234"
+    insurance:
+      provider: BlueShield
+      member_id: "XJ45567799"
+
+# Things you're willing to let the system pre-fill but always want to confirm
+# (signatures, payment) should be left out here so they surface as needs_input.
