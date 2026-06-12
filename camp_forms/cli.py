@@ -6,6 +6,7 @@ Commands:
   demo     Run the whole pipeline on bundled sample emails (no Gmail needed).
   review   Walk through drafts and approve/edit them.
   status   Show a one-line summary of every draft.
+  plan     Match camps to your kids and assemble a full-summer schedule.
 """
 
 from __future__ import annotations
@@ -65,6 +66,21 @@ def _cmd_status(_args) -> None:
     summary()
 
 
+def _cmd_plan(args) -> None:
+    from .planner import make_plan
+    from .plan_view import print_plan
+    from .preferences import child_names
+
+    result = make_plan(
+        preferences_path=args.preferences,
+        catalog_path=args.catalog,
+        discover=args.discover,
+        save_discovered=args.save_discovered,
+    )
+    print()
+    print_plan(result.plan, result.scores, child_names(result.preferences))
+
+
 def _print_scan_summary(items) -> None:
     actionable = [i for i in items if i.status in ("needs_review", "flagged_portal")]
     print(f"\nDone. {len(actionable)} of {len(items)} emails need your attention.")
@@ -86,6 +102,16 @@ def main(argv=None) -> int:
     sub.add_parser("demo", help="Run on bundled sample emails (no Gmail)").set_defaults(func=_cmd_demo)
     sub.add_parser("review", help="Review and approve drafts").set_defaults(func=_cmd_review)
     sub.add_parser("status", help="Summarize all drafts").set_defaults(func=_cmd_status)
+
+    p_plan = sub.add_parser("plan", help="Match camps and assemble a summer schedule")
+    p_plan.add_argument("--preferences", default=None, help="Path to camp preferences YAML")
+    p_plan.add_argument("--catalog", default=None, help="Path to camps catalog JSON")
+    p_plan.add_argument("--discover", action="store_true", help="Also web-search for more local camps")
+    p_plan.add_argument(
+        "--save-discovered", action="store_true",
+        help="Append discovered camps to your catalog file",
+    )
+    p_plan.set_defaults(func=_cmd_plan)
 
     args = parser.parse_args(argv)
     args.func(args)

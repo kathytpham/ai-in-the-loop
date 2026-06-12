@@ -3,9 +3,14 @@
 credentials.json
 token.json
 config/family_profile.yaml
+config/camp_preferences.yaml
 
 # Generated drafts (may contain personal data)
 data/drafts/*.json
+
+# Your real camps catalog and generated summer plans (may contain personal data)
+data/camps_catalog.json
+data/plans/*.json
 
 # Python
 __pycache__/

@@ -1,0 +1,65 @@
+# Copy this to config/camp_preferences.yaml and make it yours.
+# config/camp_preferences.yaml is gitignored so your data stays local.
+#
+# This file drives the `plan` command: the Matcher scores camps against it and
+# the Scheduler assembles the summer from it. The family *profile* (family_profile
+# .yaml) is about who your family IS; this file is about what you WANT this summer.
+
+home:
+  # Used by the discovery agent to search for nearby camps, and as the reference
+  # point for distance. Reuse the address from your family profile if you like.
+  city: Springfield
+  state: CA
+  zip: "94000"
+
+summer:
+  # The weeks you need camp, as Monday start-dates (ISO YYYY-MM-DD).
+  weeks:
+    - "2026-06-15"
+    - "2026-06-22"
+    - "2026-06-29"
+    - "2026-07-13"
+    - "2026-07-20"
+    - "2026-07-27"
+    - "2026-08-03"
+    - "2026-08-10"
+  # Weeks you do NOT need camp (family vacation, a parent is home, etc.).
+  # The scheduler leaves these unassigned (status "blocked").
+  blocked_weeks:
+    - "2026-07-06"   # beach trip
+
+budget:
+  per_week_per_child: 450     # soft cap — prefer options under this
+  total_summer: 6000          # harder cap across all kids and weeks
+
+logistics:
+  earliest_dropoff: "08:30"   # earliest a parent can drop off
+  latest_pickup: "17:30"      # latest a parent can pick up
+  need_before_care: false
+  need_after_care: true       # both parents work — aftercare matters
+  lunch: either               # provided | pack | either
+  max_distance_miles: 15      # soft preference, not a hard wall
+  farther_ok_if_great: true   # allow a farther camp if it's clearly excellent
+  min_ratio_campers_per_adult: 10   # don't accept worse than 1:10
+
+children:
+  - name: Mia Pham
+    interests: [art, swimming, theater]
+    avoid: [contact sports]
+    temperament: thrives with structure; a little shy in brand-new groups
+    # Friends she'd love to be with. The matcher treats this as a positive signal
+    # but CANNOT know if the friend actually enrolled — it will flag it for you.
+    wants_friends: ["Ava R."]
+    past_favorites: ["Lakeside Arts Camp"]
+    notes: open to trying one STEM week this year
+
+  - name: Leo Pham
+    interests: [soccer, nature, building/legos]
+    avoid: []
+    temperament: high energy, needs to run around outdoors
+    wants_friends: ["Noah K."]
+    # Prefer the same camp/site/week as a sibling when it doesn't hurt fit much
+    # (one drop-off beats two).
+    keep_with_sibling: true
+    past_favorites: []
+    notes: ""

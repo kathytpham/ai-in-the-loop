@@ -9,6 +9,11 @@ it to you to approve and submit**.
 
 Nothing is ever submitted automatically. That's the "in-the-loop" part.
 
+It also has a second job: **deciding which camps to sign up for in the first
+place.** The `plan` command scores candidate camps against your kids' interests
+and your logistics, and assembles a full-summer, week-by-week schedule — then
+hands *that* to you to approve too. See [Find & schedule camps](#find--schedule-camps).
+
 ---
 
 ## How it works
@@ -107,9 +112,12 @@ Tune what counts as a camp email via `CAMP_GMAIL_QUERY` in `.env`, or
 | File | Contents | Committed? |
 |------|----------|------------|
 | `config/family_profile.yaml` | Your real family data | **No** (gitignored) |
+| `config/camp_preferences.yaml` | What you want this summer (per kid + logistics) | **No** (gitignored) |
 | `credentials.json`, `token.json` | Gmail OAuth | **No** (gitignored) |
 | `.env` | API key, query | **No** (gitignored) |
 | `data/drafts/*.json` | Per-email triage + draft | **No** (gitignored) |
+| `data/camps_catalog.json` | Your candidate camps | **No** (gitignored) |
+| `data/plans/*.json` | Generated summer plans | **No** (gitignored) |
 
 Drafts and the profile may contain children's personal/medical data — they stay
 on your machine. The Gmail scope is `gmail.readonly`; the system cannot send,
@@ -128,6 +136,57 @@ the draft ready — submission is still your action, with exact instructions sho
 
 ---
 
+## Find & schedule camps
+
+The form pipeline above handles camps you've *already chosen*. The `plan` command
+handles the step before that — **which camps, and how do they fit across the
+summer?** — with the same human-in-the-loop philosophy: it proposes, you decide.
+
+You maintain two files (copy the examples, they're gitignored):
+
+```bash
+cp config/camp_preferences.example.yaml config/camp_preferences.yaml   # what you want
+cp data/camps_catalog.example.json       data/camps_catalog.json       # camps you're considering
+```
+
+- **`camp_preferences.yaml`** — the weeks you need covered, weeks to skip
+  (vacation), budget, your drop-off/pickup window, before/aftercare and lunch
+  needs, a distance preference (soft — "farther OK if it's really cool"), and per
+  child: interests, temperament, and friends they'd love to be with.
+- **`camps_catalog.json`** — the candidate camps and their attributes (hours,
+  ratio, price, which weeks they run, distance, eligibility).
+
+Then:
+
+```bash
+python -m camp_forms plan              # score camps and build a summer schedule
+python -m camp_forms plan --discover   # also web-search for more local camps first
+```
+
+Three focused Claude agents do the work:
+
+| Agent | Job | How |
+|-------|-----|-----|
+| **Discovery** (`agents/discovery.py`) | Find camps you don't know about near you | `web_search` + `web_fetch`; results flagged *needs-review* |
+| **Matcher** (`agents/matcher.py`) | Score every camp for each child | Eligibility, interest fit, hard logistics, distance-as-soft-penalty, friend/sibling signals |
+| **Scheduler** (`agents/scheduler.py`) | Assemble the week-by-week summer | No gaps, no double-booking, within budget, respects blocked weeks; explains trade-offs |
+
+The output is a **proposed schedule** — a week × child grid with fit scores, the
+trade-offs it made (where it chose farther/pricier for a clearly better camp), and
+the open questions only you can answer (is Ava *actually* enrolled that week?).
+Nothing is registered. Once you pick, the form pipeline handles each signup.
+
+Two deliberate guardrails:
+
+- **Friends are a *signal*, never an assumption.** The matcher can't know whether
+  a named friend actually enrolled, so it flags every friend/sibling pairing for
+  you to confirm rather than scheduling around a guess.
+- **Discovered camps are unverified.** Anything the web-discovery agent finds
+  arrives flagged *needs-review* — web data is often stale, so it never silently
+  schedules around a camp whose details you haven't checked.
+
+---
+
 ## Roadmap
 
 - **Portal automation** (opt-in): Playwright login + fill for the big providers,
@@ -135,6 +194,10 @@ the draft ready — submission is still your action, with exact instructions sho
 - **Auto-fill of public web forms** via Playwright once you approve the draft.
 - **Deadline reminders** surfaced back into your calendar/email.
 - **Per-child routing** when one email covers multiple kids.
+- **Plan → forms handoff**: turn an approved summer plan straight into the
+  registration drafts for each chosen camp.
+- **Waitlist / fill-rate awareness** in the scheduler (register-early signals).
+- **Interactive plan review**: approve/swap individual weeks like the form review CLI.
 
 ---
 
@@ -143,14 +206,21 @@ the draft ready — submission is still your action, with exact instructions sho
 ```
 camp_forms/
   cli.py            # `python -m camp_forms ...`
-  orchestrator.py   # routes emails through the agents, persists drafts
+  orchestrator.py   # routes emails through the form agents, persists drafts
+  planner.py        # routes preferences+camps through the matcher agents, persists plans
   gmail_client.py   # read-only Gmail wrapper
   profile.py        # load + render the family profile
+  preferences.py    # load + render the camp-matching preferences
+  catalog.py        # load/save + render the candidate-camps catalog
   llm.py            # Anthropic client, structured-output + tool-use helpers
   models.py         # typed schemas shared across agents
-  review.py         # human-in-the-loop approval CLI
+  review.py         # human-in-the-loop approval CLI (forms)
+  plan_view.py      # human-in-the-loop summer-schedule view
   agents/
-    triage.py  extractor.py  filler.py
+    triage.py  extractor.py  filler.py     # form pipeline
+    discovery.py  matcher.py  scheduler.py  # camp-matching pipeline
 config/family_profile.example.yaml
+config/camp_preferences.example.yaml
 data/sample_emails.json
+data/camps_catalog.example.json
 ```
